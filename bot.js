@@ -215,7 +215,7 @@ function getHelpDetails() {
         "/notifications : to toggle frequency of exam reminders\n" +
         "/register : to register yourself to the server\n" + 
         "/remove : to remove the modules to your countdown\n" + 
-        "/unregister : to unregister yourself from the server\m\m" + 
+        "/unregister : to unregister yourself from the server\n\n" + 
         "/help : to view the list of commands available";
 }
 
