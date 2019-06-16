@@ -23,8 +23,6 @@ const db = mysql.createConnection({
 
 bot = new Bot(token, { polling: true });
 
-console.log('Bot server started in the ' + process.env.NODE_ENV + ' mode');
-
 db.connect(function(err) {
     if (err) {
         throw err;
@@ -67,16 +65,37 @@ function modulesList() {
 
 function addNewUser(userID, chatID) {
     if (userID !== chatID) {
-        bot.sendMessage(chatID, "Please start a private conversation with me instead to /register");
+        bot.sendMessage(chatID, "Please start a private conversation with me to /register");
     } else {
-        db.query("SELECT COUNT(username) AS Presence FROM Users WHERE username = '" + userID + "'",
+        db.query("SELECT COUNT(username) AS Presence FROM Users WHERE username = '"
+            + userID + "'",
             function(err, result) {
                 if (result[0].Presence === 1) {
                     bot.sendMessage(chatID, "You have already been registered");
                 } else {
-                    db.query("INSERT INTO Users VALUES ('" + userID + "', '', 'true')", function(err, result) {
-                        bot.sendMessage(chatID, "Registration Successful!");
-                    });
+                    db.query("INSERT INTO Users VALUES ('" 
+                        + userID + "', '', 'Daily')", function(err, result) {
+                            bot.sendMessage(chatID, "Registration Successful!");
+                        });
+                }
+            }); 
+    }
+}
+
+function removeUser(userID, chatID) {
+    if (userID !== chatID) {
+        bot.sendMessage(chatID, "Please start a private conversation with me to /unregister");
+    } else {
+        db.query("SELECT COUNT(username) AS Presence FROM Users WHERE username = '"
+            + userID + "'",
+            function(err, result) {
+                if (result[0].Presence === 0) {
+                    bot.sendMessage(chatID, "You have already been unregistered");
+                } else {
+                    db.query("DELETE FROM Users WHERE username = '" +
+                        userID + "'", function(err, result) {
+                            bot.sendMessage(chatID, "Unregistration Successful!");
+                        });
                 }
             }); 
     }
@@ -195,7 +214,8 @@ function getHelpDetails() {
         "/myid : check your id\n" + 
         "/notifications : to toggle frequency of exam reminders\n" +
         "/register : to register yourself to the server\n" + 
-        "/remove : to remove the modules to your countdown\n\n" + 
+        "/remove : to remove the modules to your countdown\n" + 
+        "/unregister : to unregister yourself from the server\m\m" + 
         "/help : to view the list of commands available";
 }
 
@@ -223,7 +243,7 @@ function remove(userID, chatID) {
                             "keyboard": keyboardArray(arr)
                         }
                     }).then(function () {
-                        bot.once("message", function (mod) {
+                        bot.once("text", function (mod) {
                             removal(chatID, arr, mod.text);
                             db.query("UPDATE Users SET modules = '" 
                                 + arr + "' WHERE username = '" + userID + "'", 
@@ -246,7 +266,7 @@ function push(userID, chatID) {
             } else {
                 let arr = split(result[0].modules);
                 bot.sendMessage(chatID, "Please enter the module to be added!");
-                bot.once("message", (mod) => {
+                bot.once("text", (mod) => {
                     addition(chatID, arr, mod.text);
                     db.query("UPDATE Users SET modules = '" +
                         arr + "' WHERE username = '" + userID + "'", 
@@ -271,7 +291,7 @@ function changeNotifications(userID, chatID) {
                             "keyboard": dates.periods
                         }
                     });
-                bot.once("message", (msg) => {
+                bot.once("text", (msg) => {
                     const stats = msg.text;     
                     bot.sendMessage(chatID, "Change successful!", 
                         {
@@ -284,6 +304,7 @@ function changeNotifications(userID, chatID) {
                         function(err) {
 
                         });
+
                 });
             }
         });
@@ -311,7 +332,7 @@ bot.onText(/\/register/, function (msg) {
 bot.onText(/\/friendmods/ , function (msg) {
     if (msg.text === "/friendmods") {
         bot.sendMessage(msg.chat.id, "Please key in your friend's ID: ");
-        bot.once("message", function (data) {
+        bot.once("text", function (data) {
             checkFriendModules(data.text, msg.chat.id); 
         });
     }
@@ -350,6 +371,12 @@ bot.onText(/\/remove/, function (msg) {
 bot.onText(/\/notifications/, function (msg) {
     if (msg.text === "/notifications") {
         changeNotifications(msg.from.id, msg.chat.id);
+    }
+});
+
+bot.onText(/\/unregister/, function (msg) {
+    if (msg.text === "/unregister") {
+        removeUser(msg.from.id, msg.chat.id);
     }
 });
 
