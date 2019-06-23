@@ -45,7 +45,7 @@ function sendAllPeople() {
     db.query("SELECT * FROM Users", function(err, result) {
         for (let i = 0; i < result.length; i ++) {
             let user = "" + result[i].username;
-            if (result[i].notifications === 'daily') {
+            if (result[i].notifications === 'Daily') {
                 checkModules(user, user);
             } else if (dates.parseDate(result[i].notifications, 10) === Date.getDay()) {
                 checkModules(user, user);
@@ -267,7 +267,7 @@ function push(userID, chatID) {
                 let arr = split(result[0].modules);
                 bot.sendMessage(chatID, "Please enter the module to be added!");
                 bot.once("text", (mod) => {
-                    addition(chatID, arr, mod.text);
+                    addition(chatID, arr, mod.text.toUpperCase());
                     db.query("UPDATE Users SET modules = '" +
                         arr + "' WHERE username = '" + userID + "'", 
                         function(err) {
