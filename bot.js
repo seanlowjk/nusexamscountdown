@@ -47,7 +47,7 @@ function sendAllPeople() {
             let user = "" + result[i].username;
             if (result[i].notifications === 'Daily') {
                 checkModules(user, user);
-            } else if (dates.parseDate(result[i].notifications, 10) === Date.getDay()) {
+            } else if (dates.parseDate(result[i].notifications) === Date.getDay()) {
                 checkModules(user, user);
             }
         }
@@ -206,7 +206,7 @@ function removal(chatID, array, mod) {
 }
 
 function getHelpDetails() {
-    return "Note the current semester is: Special Term II\n\n" +
+    return "Note the current semester is: AY 19/20 Semester 1\n\n" +
         "/add : to add the module to your countdown\n" + 
         "/checkmods : to check the remaining countdown for the modules\n" + 
         "/friendmods : check your friend's examinations\n" + 
@@ -274,6 +274,17 @@ function push(userID, chatID) {
 
                         });
                 });
+            }
+        });
+}
+
+function listNotifications(userID, chatID) {
+    db.query("SELECT * FROM Users WHERE username = '" + userID + "'",
+        function(err, result) {
+            if (result[0] === undefined) {
+                bot.sendMessage(chatID, "Please /register first!");
+            } else {
+                bot.sendMessage(chatID, "Your current notifications schedule: " + result[0].Date_); 
             }
         });
 }
@@ -370,6 +381,7 @@ bot.onText(/\/remove/, function (msg) {
 
 bot.onText(/\/notifications/, function (msg) {
     if (msg.text === "/notifications") {
+        listNotifications(msg.from.id, msg.chat.id);
         changeNotifications(msg.from.id, msg.chat.id);
     }
 });
