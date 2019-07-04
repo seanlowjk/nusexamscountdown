@@ -284,7 +284,7 @@ function listNotifications(userID, chatID) {
             if (result[0] === undefined) {
                 bot.sendMessage(chatID, "Please /register first!");
             } else {
-                bot.sendMessage(chatID, "Your current notifications schedule: " + result[0].Date_); 
+                bot.sendMessage(chatID, "Your current notifications schedule: " + result[0].notifications); 
             }
         });
 }
