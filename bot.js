@@ -143,7 +143,7 @@ function checkFriendModules(userID, chatID) {
 }
 
 function countDown(time) {
-    const remaining = Math.floor((new Date(time).getTime() - new Date().getTime()) / 1000);
+    const remaining = Math.floor((new Date(time).getTime() - new Date().getTime()) / 1000) - 28800;
     const seconds = remaining % 60;
     const minutes = Math.floor(remaining / 60) % 60;
     const hours = Math.floor(remaining / 3600) % 24;
