@@ -47,7 +47,7 @@ function sendAllPeople() {
             let user = "" + result[i].username;
             if (result[i].notifications === 'Daily') {
                 checkModules(user, user);
-            } else if (dates.parseDate(result[i].notifications) === Date.getDay()) {
+            } else if (dates.parseDate(result[i].notifications) ===  new Date().getDay()) {
                 checkModules(user, user);
             }
         }

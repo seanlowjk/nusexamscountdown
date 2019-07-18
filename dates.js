@@ -17,7 +17,11 @@ let dates = {
             return 6;
         } else if (date === "Sunday") {
             return 0;
-        } 
+        } else if (date === "Daily") {
+            return 999;
+        } else if (date === "Off") {
+            return 555;
+        }
     }
 }
 
