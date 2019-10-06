@@ -15,7 +15,7 @@
     "react-scripts": "^3.2.0"
   },
   "scripts": {
-    "test": "react-scripts test",
+    "test": "react-scripts test --passWithNoTests",
     "start": "node index.js",
     "switch_to_dev": "export $(cat .env | xargs) && wget --spider https://api.telegram.org/bot$TOKEN/setWebhook?url= --delete-after && node index.js"
   },
